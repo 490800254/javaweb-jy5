@@ -1,11 +1,11 @@
 package com.itdr.controller;
 
-import com.itdr.common.Const;
 import com.itdr.common.ResponseCode;
-import com.itdr.pojo.Users;
 import com.itdr.service.UserService;
+import com.itdr.utils.JsonUtils;
 import com.itdr.utils.PathUtil;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -32,22 +32,25 @@ public class UsersController extends HttpServlet {
         //判断请求类型
         switch (path){
             case "list":
-                rs = listDo(request);
+                rs=listDo(request,response);
                 break;
             case "login":
-                rs = loginDo(request);
+                rs = loginDo(request,response);
+//                loginDo(request,response);
                 break;
-            case "disableuser":
-                rs = disableuserDo(request);
+            case "change":
+                rs = changeDo(request);
                 break;
         }
 
         //返回响应数据
-        response.getWriter().write(rs.toString());
+        response.setContentType("text/json;charset=utf-8");
+        response.getWriter().println(JsonUtils.obj2String(rs));
+//        response.getWriter().write(rs.toString());
     }
 
     //获取所有用户列表的请求
-    private ResponseCode listDo(HttpServletRequest request){
+    private ResponseCode listDo(HttpServletRequest request,HttpServletResponse response){
         ResponseCode rs = new ResponseCode();
 
         //获取参数
@@ -59,8 +62,8 @@ public class UsersController extends HttpServlet {
         return rs;
     }
 
-    //用户登录的请求
-    private ResponseCode loginDo(HttpServletRequest request){
+    //管理员登录的请求
+    private ResponseCode loginDo(HttpServletRequest request,HttpServletResponse response){
         //获取参数
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -70,13 +73,15 @@ public class UsersController extends HttpServlet {
         session.setAttribute("user",rs.getData());
         //调用业务层处理业务
         return rs;
+
     }
 
-    //用户禁用的操作
-    private ResponseCode disableuserDo(HttpServletRequest request){
+    //用户禁用与启用的操作
+    private ResponseCode changeDo(HttpServletRequest request){
         //获取参数
         String uid = request.getParameter("uid");
-        ResponseCode rs = uc.selectOne(uid);
+        String status = request.getParameter("status");
+        ResponseCode rs = uc.selectOne(uid,Integer.parseInt(status));
         //调用业务层处理业务
         return rs;
     }

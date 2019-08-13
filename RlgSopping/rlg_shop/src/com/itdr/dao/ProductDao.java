@@ -29,7 +29,20 @@ public class ProductDao {
      * 查找返回可能不止一个用户
      */
     //按产品名查找
-    public Products selectOne(String productName) {
+    public List<Products> selectOne(String productName) {
+        QueryRunner qr = new QueryRunner(PoolUtil.getCom());
+        String sql = "select * from products where pname like ?";
+        List<Products> p  = null;
+        String productName1="%"+productName+"%";
+        try {
+            p = qr.query(sql,new BeanListHandler<Products>(Products.class),productName1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return p;
+    }
+
+    public Products selectOne1(String productName) {
         QueryRunner qr = new QueryRunner(PoolUtil.getCom());
         String sql = "select * from products where pname like ?";
         Products p  = null;
@@ -41,7 +54,6 @@ public class ProductDao {
         }
         return p;
     }
-
     //按产品号查找
     public Products selectOne(int productId) {
         QueryRunner qr = new QueryRunner(PoolUtil.getCom());
@@ -49,6 +61,19 @@ public class ProductDao {
         Products p  = null;
         try {
             p = qr.query(sql,new BeanHandler<Products>(Products.class),productId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return p;
+    }
+
+    //按产品父Id和名称查找
+    public Products selectOne(Integer id,String productName) {
+        QueryRunner qr = new QueryRunner(PoolUtil.getCom());
+        String sql = "select * from products where parentId = ? and pname = ?";
+        Products p  = null;
+        try {
+            p = qr.query(sql,new BeanHandler<Products>(Products.class),id,productName);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -93,4 +118,18 @@ public class ProductDao {
         }
         return row;
     }
+
+    //增加节点
+    public int addOne(Integer id, String name) {
+        QueryRunner qr = new QueryRunner(PoolUtil.getCom());
+        String sql = "insert into products (parentId,pname) value (?,?)";
+        int row = 0;
+        try {
+            row = qr.update(sql,id,name);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+
 }

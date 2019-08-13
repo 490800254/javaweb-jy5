@@ -45,7 +45,7 @@ public class CategoryDao {
         if(id==0){
             sql = "select * from categorys where id=? or name=?";
         }else {
-            sql = "select * from products where id=? or name=?";
+            sql = "select * from products where pid=? or pname=?";
         }
 
         Categorys c = null;
@@ -60,12 +60,7 @@ public class CategoryDao {
     //增加节点
     public int addOne(Integer id, String name) {
         QueryRunner qr = new QueryRunner(PoolUtil.getCom());
-        String sql = null;
-        if(id==0){
-            sql = "insert into categorys (id,parentId,name) value (?,0,?)";
-        }else {
-            sql = "insert into products (categoryId,pname) value (?,?)";
-        }
+        String sql = "insert into categorys (parentId,name) value (?,?)";
 
         int row = 0;
         try {

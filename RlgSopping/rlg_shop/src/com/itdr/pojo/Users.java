@@ -48,11 +48,11 @@ public class Users {
         this.type = type;
     }
 
-    public Integer getStats() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStats(Integer stats) {
+    public void setStatus(Integer stats) {
         this.status = stats;
     }
 

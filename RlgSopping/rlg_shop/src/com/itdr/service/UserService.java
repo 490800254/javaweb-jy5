@@ -22,8 +22,7 @@ public class UserService {
 
         //如果集合元素为空
         ResponseCode rs = new ResponseCode();
-        rs.setStatus(0);
-        rs.setData(u);
+        rs = ResponseCode.successRS(0,u);
         return rs;
     }
 
@@ -31,50 +30,43 @@ public class UserService {
     public ResponseCode selectOne(String username, String password) {
         ResponseCode rs = new ResponseCode();
         if (username == null || username.equals("") || password == null || password.equals("")) {
-            rs.setStatus(Const.USER_MISTAKEN_CODE);
-            rs.setMag(Const.USER_MISTAKEN_MSG);
+            rs = ResponseCode.defeatedRS(Const.USER_MISTAKEN_CODE,Const.USER_MISTAKEN_MSG);
             return rs;
         }
 
         //查找用户是否存在
-        Users u = ud.selectOne(username,password);
+        Users u = ud.selectOne(username, password);
 
         //如果用户不存在
-        if(u == null){
-            rs.setStatus(Const.USER_MISTAKEN_CODE);
-            rs.setMag(Const.USER_MISTAKEN_MSG);
+        if (u == null) {
+            rs = ResponseCode.defeatedRS(Const.USER_MISTAKEN_CODE,Const.USER_MISTAKEN_MSG);
             return rs;
         }
 
         //用户权限
-        if(u.getType() != 1){
-            rs.setStatus(Const.USER_UNOPERATE_CODE);
-            rs.setData(u);
-            rs.setMag(Const.USER_UNOPERATE_MSG);
+        if (u.getType() != 1) {
+            rs = ResponseCode.SorDRS(Const.USER_UNOPERATE_CODE,u,Const.USER_UNOPERATE_MSG);
             return rs;
         }
 
-        rs.setStatus(0);
-        rs.setData(u);
+        rs = ResponseCode.successRS(0,u);
         return rs;
     }
 
-    //用户禁用
-    public ResponseCode selectOne(String uids) {
+    //用户禁用与启用
+    public ResponseCode selectOne(String uids, int status) {
         ResponseCode rs = new ResponseCode();
-        if (uids == null || uids.equals("") ) {
-            rs.setStatus(Const.USER_PARAMETER_CODE);
-            rs.setMag(Const.USER_PARAMETER_MSG);
+        if (uids == null || uids.equals("")) {
+            rs = ResponseCode.defeatedRS(Const.USER_PARAMETER_CODE,Const.USER_PARAMETER_MSG);
             return rs;
         }
 
         //字符串转数值
-        Integer uid =null;
+        Integer uid = null;
         try {
             uid = Integer.parseInt(uids);
-        }catch(Exception e){
-            rs.setStatus(105);
-            rs.setMag("输入非法参数");
+        } catch (Exception e) {
+            rs = ResponseCode.defeatedRS(105,"输入非法参数");
             return rs;
         }
 
@@ -83,29 +75,39 @@ public class UserService {
         Users u = ud.selectOne(uid);
 
         //如果用户不存在
-        if(u == null){
-            rs.setStatus(Const.USER_NO_CODE);
-            rs.setMag(Const.USER_NO_MSG);
+        if (u == null) {
+            rs = ResponseCode.defeatedRS(Const.USER_NO_CODE,Const.USER_NO_MSG);
             return rs;
         }
+        int row = 0;
+        //判断禁用状态
+        if (status == 0) {
+            //用户禁用情况
+            if (u.getStatus() == 0) {
+                rs = ResponseCode.defeatedRS(Const.USER_DISABLE_CODE,Const.USER_DISABLE_MSG);
+                return rs;
+            }
 
-        //用户禁用情况
-        if(u.getStats() == 1){
-            rs.setStatus(Const.USER_DISABLE_CODE);
-            rs.setMag(Const.USER_DISABLE_MSG);
-            return rs;
+            //禁用用户
+            row = ud.updateByUid(uid);
+        }
+        if (status == 1){
+            //用户启用情况
+            if (u.getStatus() == 1) {
+                rs = ResponseCode.defeatedRS(Const.USER_SYART_CODE,Const.USER_START_MSG);
+                return rs;
+            }
+
+            //启用用户
+            row = ud.updateByUid1(uid);
         }
 
-        //禁用用户
-        int row = ud.updateByUid(uid);
 
-        if(row <= 0){
-            rs.setStatus(106);
-            rs.setMag("用户禁用失败");
+        if (row <= 0) {
+            rs = ResponseCode.defeatedRS(106,"用户状态修改失败");
         }
 
-        rs.setStatus(0);
-        rs.setData(row);
+        rs = ResponseCode.defeatedRS(0,"用户状态修改成功");
         return rs;
     }
 

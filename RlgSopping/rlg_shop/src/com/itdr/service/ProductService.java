@@ -28,7 +28,7 @@ public class ProductService {
     }
 
     //按产品名查找
-    public ResponseCode selectOne(String productName) {
+    public ResponseCode<Products> selectOne(String productName) {
         ResponseCode rs = new ResponseCode();
         if (productName == null && productName.equals("")) {
             rs.setStatus(Const.PRODUCT_PARAMETER_CODE);
@@ -37,7 +37,7 @@ public class ProductService {
         }
 
         //查找商品是否存在
-        Products p = pd.selectOne(productName);
+        List<Products> p = pd.selectOne(productName);
 
 
         //如果商品不存在
@@ -47,16 +47,9 @@ public class ProductService {
             return rs;
         }
 
-        //商品状态
-        if (p.getStatus() != 1) {
-            rs.setStatus(Const.PRODUCT_DISABLE_CODE);
-            rs.setData(p.getPname());
-            rs.setMag(Const.PRODUCT_DISABLE_MSG);
-            return rs;
-        }
 
         rs.setStatus(0);
-        rs.setData(p.getPname());
+        rs.setData(p);
         return rs;
     }
 
@@ -89,7 +82,31 @@ public class ProductService {
         }
 
         rs.setStatus(0);
-        rs.setData(p.getPname());
+        rs.setData(p);
+        return rs;
+    }
+
+    //按父类号和商品名添加
+    public ResponseCode selectOne(int categoryId,String productName) {
+        ResponseCode rs = new ResponseCode();
+        if (productName == null && productName.equals("")) {
+            rs.setStatus(Const.PRODUCT_PARAMETER_CODE);
+            rs.setMag(Const.PRODUCT_PARAMETER_MSG);
+            return rs;
+        }
+
+        //查找商品是否存在
+        Products p = pd.selectOne(categoryId,productName);
+
+
+        //如果商品不存在
+        if (p == null) {
+            rs.setStatus(Const.PRODUCT_NO_CODE);
+            rs.setMag(Const.PRODUCT_NO_MSG);
+            return rs;
+        }
+
+
         return rs;
     }
 

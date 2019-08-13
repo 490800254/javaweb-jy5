@@ -52,7 +52,21 @@ public class UserDao {
     //根据ID禁用一个用户
     public int updateByUid(Integer  uid) {
         QueryRunner qr = new QueryRunner(PoolUtil.getCom());
-        String sql = "update users set stats = 1 where uid = ?";
+        String sql = "update users set status = 0 where uid = ?";
+
+        int row  = 0;
+        try {
+            row = qr.update(sql,uid);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return row;
+    }
+
+    //根据ID启用一个用户
+    public int updateByUid1(Integer  uid) {
+        QueryRunner qr = new QueryRunner(PoolUtil.getCom());
+        String sql = "update users set status = 1 where uid = ?";
 
         int row  = 0;
         try {

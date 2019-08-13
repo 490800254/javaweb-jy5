@@ -4,6 +4,7 @@ import com.itdr.common.Const;
 import com.itdr.common.ResponseCode;
 import com.itdr.pojo.Products;
 import com.itdr.service.ProductService;
+import com.itdr.utils.JsonUtils;
 import com.itdr.utils.PathUtil;
 
 
@@ -51,7 +52,9 @@ public class ProductController extends HttpServlet {
         }
 
         //返回响应数据
-        response.getWriter().write(rs.toString());
+        response.setContentType("text/json;charset=utf-8");
+        response.getWriter().println(JsonUtils.obj2String(rs));
+//        response.getWriter().write(rs.toString());
 
     }
 

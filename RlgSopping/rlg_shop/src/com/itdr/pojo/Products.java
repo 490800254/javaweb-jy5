@@ -2,7 +2,7 @@ package com.itdr.pojo;
 
 public class Products {
     private Integer pid;
-    private Integer categoryId;
+    private Integer parentId;
     private String pname;
     private String subtitle;
     private String mainImage;
@@ -17,12 +17,12 @@ public class Products {
         this.pid = id;
     }
 
-    public Integer getCategoryid() {
-        return categoryId;
+    public Integer getParentid() {
+        return parentId;
     }
 
-    public void setCategoryid(Integer cid) {
-        this.categoryId = cid;
+    public void setParentid(Integer cid) {
+        this.parentId = cid;
     }
 
     public String getPname() {
@@ -65,16 +65,16 @@ public class Products {
         this.price = price;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + pid +
-                ", cid=" + categoryId +
-                ", pname='" + pname + '\'' +
-                ", subtitle='" + subtitle + '\'' +
-                ", mainImage='" + mainImage + '\'' +
-                ", stats=" + status +
-                ", price=" + price +
-                '}';
-    }
+//    @Override
+//    public String toString() {
+//        return "Product{" +
+//                "id=" + pid +
+//                ", cid=" + categoryId +
+//                ", pname='" + pname + '\'' +
+//                ", subtitle='" + subtitle + '\'' +
+//                ", mainImage='" + mainImage + '\'' +
+//                ", stats=" + status +
+//                ", price=" + price +
+//                '}';
+//    }
 }
